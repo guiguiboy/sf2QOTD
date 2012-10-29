@@ -1,3 +1,8 @@
+sf2qotd_website:
+    resource: "@Sf2qotdWebsiteBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
 # Internal routing configuration to handle ESI
 #_internal:
 #    resource: "@FrameworkBundle/Resources/config/routing/internal.xml"

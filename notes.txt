@@ -1,0 +1,181 @@
+Démarrer un projet sous Symfony 2.1 procédure installation
+==========================================================
+
+Le contexte
+___________
+
+Vous connaissez peut-être (surement) le principe de DTC (anciennement bashfr). Ben la, c'est pareil.
+
+Au boulot, nous sommes dans un open space. Pour échanger et faire le moins de bruit possible, on utilise un chat commun à l'équipe.
+Mais on aime bien déconner quand même. Ca donne lieu à quelques perles qu'il faut immortaliser. 
+Quoi de mieux qu'une application pour les enregistrer et les noter ?
+
+On va nommer le projet sf2QOTD. Et allez, on y va : 
+
+NB : ceci est un template de démarrage. Vous pouvez l'adapter pour un autre projet sous symfony 2.1.
+
+
+Installer Curl
+______________
+$ sudo apt-get install curl
+
+
+Installer composer
+__________________
+$ curl -s https://getcomposer.org/installer | php
+
+Si vous êtes derriere un proxy HTTP, vous devrez ajouter des règles : 
+export http_proxy="IP:PORT"
+export https_proxy="IP:PORT"
+
+Attention à la configuration de suhosin qui peut empêcher l'écriture des fichiers phar.
+Lancer ensuite : 
+$ php composer.phar create-project symfony/framework-standard-edition /var/www/sf2QOTD/Symfony 2.1.x-dev
+
+
+Configurer le virtual host Apache
+
+sudo vim /etc/apache2/sites-available/sf2QOTD
+<VirtualHost *:80>
+    ServerName sf2qotd.local
+    ServerAdmin webmaster@localhost
+
+    DocumentRoot /var/www/sf2QOTD/Symfony/web/
+    <Directory /var/www/sf2QOTD/Symfony/web/>
+        Options Indexes FollowSymLinks MultiViews
+        AllowOverride None
+        Order allow,deny
+        allow from all
+        <IfModule mod_rewrite.c>
+            RewriteEngine On
+            RewriteCond %{REQUEST_FILENAME} !-f
+            RewriteRule ^(.*)$ /app.php [QSA,L]
+        </IfModule>
+    </Directory>
+</VirtualHost>
+
+sudo a2enmod sf2QOTD
+sudo /etc/init.d/apache2 reload
+
+Accéder à la configuration : 
+http://sf2qotd.local/config.php
+
+Nous avons l'erreur : "This script is only accessible from localhost."
+
+En effet, dans le fichier config.php, il est indiqué que la configuration n'est accessible que par localhost.
+Ajoutez votre IP. Cela suffira pour le moment car nous allons ensuite supprimer ce fichier.
+
+L'interface de configuration vous liste alors les différents problèmes de votre configuration.
+(Les problèmes peuvent être de nature très différente, je ne pourrais pas tous les exposer ici)
+
+___________________________________
+Si vous avez des problèmes de droits, vous devez ajouter les droits 
+Sur notre serveur de dev, les impacts sont limités, un chmod 0775 suffira (sous réserve d'avoir paramétré correctement votre machine).
+
+chmod -R 0775  app/cache/
+chmod -R 0775  app/logs/
+___________________________________
+
+
+Une fois la configuration adéquate, vous pouvez alors lancer la configuration de votre application. Cette interface vous permettra de commencer à paramétrer le fichier parameters.yml.
+NB : pensez à bien exclure du gestionnaire de version le fichier parameters.yml car celui ci peut contenir des informations critiques (par exemple mot de passe).
+
+Vous pouvez maintenant accéder à votre application via votre navigateur : 
+http://sf2qotd.local/app_dev.php/
+
+NB : Vous risquez de rencontrer à nouveau un problème de droits sur le fichier app_dev.php
+
+
+
+
+Nous allons maintenant créer notre première route pour la homepage.
+Pour créer notre page d'accueil, nous aurons besoin d'un bundle. Symfony 2 fournit un éditeur de bundles en CLI : 
+php app/console generate:bundle
+
+Bundle namespace: Sf2qotd/WebsiteBundle
+Bundle name [Sf2qotdWebsiteBundle]:
+Configuration format (yml, xml, php, or annotation) [annotation]:
+Do you want to generate the whole directory structure [no]? yes
+
+You are going to generate a "Sf2qotd\WebsiteBundle\Sf2qotdWebsiteBundle" bundle
+in "/var/www/sf2QOTD/Symfony/src/" using the "annotation" format.
+
+Do you confirm generation [yes]? yes
+
+Generating the bundle code: OK
+Checking that the bundle is autoloaded: OK
+Confirm automatic update of your Kernel [yes]? yes
+Enabling the bundle inside the Kernel: OK
+Confirm automatic update of the Routing [yes]? yes
+
+Le bundle est automatiquement généré.
+
+Essayez d'accéder à l'adresse suivante : 
+http://sf2qotd.local/app_dev.php/hello/guigui
+
+Vous aurez alors : 
+Hello guigui! 
+
+Comment est-ce possible ? 
+Lors de la création du bundle, nous avons choisi de générer automatiquement la structure. Symfony nous a alors créer la classe DefaultController avec une route sous forme d'annotation.
+Puis, nous lui avons demandé de mettre à jour automatiquement le Routing. Vous verrez dans votre routing.yml les lignes suivantes : 
+sf2qotd_website:
+    resource: "@Sf2qotdWebsiteBundle/Controller/"
+    type:     annotation
+    prefix:   /
+    
+L'instruction ci-dessus dit à Symfony qu'il faut interpréter les routes directement dans les annotations des contrôleurs du bundle.
+
+Nous allons modifier cette action pour la homepage : 
+    /**
+     * @Route("/", name="homepage")
+     * @Template()
+     */
+    public function indexAction()
+    {
+        return array();
+    }
+    
+Nous allons également changer le contenu du template : 
+
+sf2QOTD : le meilleur du pire du chat
+
+Essayez d'accéder à la homepage du site : 
+http://sf2qotd.local/app_dev.php/
+
+Perdu ! Vous accédez encore au 
+Par contre, cela fonctionne hors environnement dev : http://sf2qotd.local/app.php
+
+Pourquoi ? Tout simplement car le routing_dev.yml contient des instructions spécifiques au bundle Acme (bundle de démo).
+Ouvrez votre routing_dev.yml et supprimez les lignes suivantes : 
+_welcome:
+    pattern:  /
+    defaults: { _controller: AcmeDemoBundle:Welcome:index }
+
+_demo_secured:
+    resource: "@AcmeDemoBundle/Controller/SecuredController.php"
+    type:     annotation
+
+_demo:
+    resource: "@AcmeDemoBundle/Controller/DemoController.php"
+    type:     annotation
+    prefix:   /demo
+
+    
+Relancez votre navigateur avec l'adresse http://sf2qotd.local/app_dev.php/
+Succès : votre homepage est correctement affichée.
+
+Maintenant, pour dynamiser cette homepage, nous allons créer un modèle et les tables associées.
+
+
+
+
+
+
+
+
+
+
+
+
+
