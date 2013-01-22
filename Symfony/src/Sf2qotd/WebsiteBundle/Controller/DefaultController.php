@@ -14,6 +14,38 @@ class DefaultController extends Controller
      */
     public function indexAction()
     {
-        return array();
+    	$quotes = $this->get('doctrine')
+    		->getRepository('Sf2qotdWebsiteBundle:Quote')
+    		->findAll();
+    		
+        return array('quotes' => $quotes);
+    }
+
+    /**
+     * @Route("/show/{id}", name="_website_show")
+     * @Template()
+     */
+    public function showAction($id)
+    {
+    	$quote = $this->get('doctrine')
+    		->getRepository('Sf2qotdWebsiteBundle:Quote')
+    		->find($id);
+    		
+        return array('quote' => $quote);
+    }
+
+    /**
+     * @Route("/random", name="_website_random")
+     * @Template("Sf2qotdWebsiteBundle:Default:show.html.twig")
+     */
+    public function randomAction()
+    {
+    	$quotes = $this->get('doctrine')
+    		->getRepository('Sf2qotdWebsiteBundle:Quote')
+    		->findAll();
+    	$count = count($quotes);
+    	$rand  = rand(0, $count - 1);
+    		
+        return array('quote' => $quotes[$rand]);
     }
 }
