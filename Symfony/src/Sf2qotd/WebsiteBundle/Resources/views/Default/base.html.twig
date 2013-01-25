@@ -5,16 +5,19 @@
         <title>
             {% block title %}sf2QOTD : le meilleur du pire du chat{% endblock %}
         </title>
+        {% block stylesheets %}
+            <link href="{{ asset('bundles/sf2qotdwebsite/css/main.css') }}" type="text/css" rel="stylesheet"/>
+        {% endblock %}
     </head>
     <body>
         <div>sf2QOTD : le meilleur du pire du chat</div>
         <div id="sidebar">
                 {% block sidebar %}
                 <ul>
-                    <li><a href="/">Home</a></li>
-                    <li><a href="/top">Top 10</a></li>
-                    <li><a href="/flop">Flop 10</a></li>
-                    <li><a href="/random">Au hasard</a></li>
+                    <li><a href="{{ path('homepage') }}">Home</a></li>
+                    <li><a href="{{ path('_website_top_ten') }}">Top 10</a></li>
+                    <li><a href="{{ path('_website_flop_ten') }}">Flop 10</a></li>
+                    <li><a href="{{ path('_website_random') }}">Au hasard</a></li>
                 </ul>
                 {% endblock %}
             </div>
@@ -27,5 +30,4 @@
             footer
         </div>
     </body>
-
 </html>

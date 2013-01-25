@@ -1,0 +1,7 @@
+<div class="list">
+    {% for quote in quotes %}
+        {% include 'Sf2qotdWebsiteBundle:Default:quote.html.twig' 
+            with {'quote': quote}
+        %}        
+    {% endfor %}
+</div>

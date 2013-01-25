@@ -2,5 +2,7 @@
 {% extends 'Sf2qotdWebsiteBundle:Default:base.html.twig' %}
 
 {% block body %}
-    <div>{{ quote.body }}</div>
+    {% include 'Sf2qotdWebsiteBundle:Default:quote.html.twig' 
+            with {'quote': quote}
+    %}
 {% endblock %}

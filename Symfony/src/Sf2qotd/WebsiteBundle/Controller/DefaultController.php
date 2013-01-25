@@ -18,7 +18,10 @@ class DefaultController extends Controller
     		->getRepository('Sf2qotdWebsiteBundle:Quote')
     		->findAll();
     		
-        return array('quotes' => $quotes);
+        return array(
+        	'quotes' => $quotes,
+        	'category'   => 'Les dernières contributions'
+        );
     }
 
     /**
@@ -32,6 +35,38 @@ class DefaultController extends Controller
     		->find($id);
     		
         return array('quote' => $quote);
+    }
+    
+    /**
+     * @Route("/top-ten", name="_website_top_ten")
+     * @Template("Sf2qotdWebsiteBundle:Default:index.html.twig")
+     */
+    public function topTenAction()
+    {
+    	$quotes = $this->get('doctrine')
+    		->getRepository('Sf2qotdWebsiteBundle:Quote')
+    		->getTopTen();
+    		
+    	return array(
+    		'quotes' => $quotes,
+    		'category'   => 'Top 10'
+    	);
+    }
+    
+    /**
+     * @Route("/flop-ten", name="_website_flop_ten")
+     * @Template("Sf2qotdWebsiteBundle:Default:index.html.twig")
+     */
+    public function flopTenAction()
+    {
+    	$quotes = $this->get('doctrine')
+    		->getRepository('Sf2qotdWebsiteBundle:Quote')
+    		->getFlopTen();
+    		
+    	return array(
+    		'quotes' => $quotes,
+    		'category'   => 'Flop 10'
+    	);
     }
 
     /**

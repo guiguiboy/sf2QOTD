@@ -2,9 +2,9 @@
 {% extends 'Sf2qotdWebsiteBundle:Default:base.html.twig' %}
 
 {% block body %}
-    <div>Les dernières contributions</div>
-    {% for quote in quotes %}
-        <div>{{ quote.body }}</div>
-    {% endfor %}
+    <div class="category">{{ category }}</div>
+    {% include 'Sf2qotdWebsiteBundle:Default:list.html.twig' 
+        with {'quotes': quotes}
+    %}
     
 {% endblock %}
