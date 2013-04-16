@@ -2,6 +2,7 @@
 
 namespace Sf2qotd\WebsiteBundle\Controller;
 
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -82,5 +83,45 @@ class DefaultController extends Controller
     	$rand  = rand(0, $count - 1);
     		
         return array('quote' => $quotes[$rand]);
+    }
+    
+    /**
+     * @Route("/vote_plus/{id}", name="_website_vote_plus")
+     */    
+    public function votePlus($id)
+    {
+    	$quote = $this->get('doctrine')
+    		->getRepository('Sf2qotdWebsiteBundle:Quote')
+    		->find($id);
+    	$quote->setVotePlus($quote->getVotePlus() + 1);
+    	$this->get('doctrine')->getEntityManager()->persist($quote);
+    	$this->get('doctrine')->getEntityManager()->flush();
+    	
+    	$jsonData = json_encode(array('status' => "OK", "type" => "vote_plus", "value" => $quote->getVotePlus()));
+    	$headers = array(
+			'Content-Type' => 'application/json'
+		);
+		$response = new Response($jsonData, 200, $headers);
+		return $response;
+    }
+    
+    /**
+     * @Route("/vote_minus/{id}", name="_website_vote_minus")
+     */    
+    public function voteMinus($id)
+    {
+    	$quote = $this->get('doctrine')
+    		->getRepository('Sf2qotdWebsiteBundle:Quote')
+    		->find($id);
+    	$quote->setVoteMinus($quote->getVoteMinus() + 1);
+    	$this->get('doctrine')->getEntityManager()->persist($quote);
+    	$this->get('doctrine')->getEntityManager()->flush();
+    	
+    	$jsonData = json_encode(array('status' => "OK", "type" => "vote_minus", "value" => $quote->getVoteMinus()));
+    	$headers = array(
+			'Content-Type' => 'application/json'
+		);
+		$response = new Response($jsonData, 200, $headers);
+		return $response;
     }
 }
