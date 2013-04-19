@@ -6,6 +6,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 class DefaultController extends Controller
 {
@@ -90,14 +91,25 @@ class DefaultController extends Controller
      */    
     public function votePlus($id)
     {
-    	$quote = $this->get('doctrine')
-    		->getRepository('Sf2qotdWebsiteBundle:Quote')
-    		->find($id);
-    	$quote->setVotePlus($quote->getVotePlus() + 1);
-    	$this->get('doctrine')->getEntityManager()->persist($quote);
-    	$this->get('doctrine')->getEntityManager()->flush();
-    	
-    	$jsonData = json_encode(array('status' => "OK", "type" => "vote_plus", "value" => $quote->getVotePlus()));
+    	$session       = $this->getRequest()->getSession();
+    	$votedQuoteIds = $session->get('votedQuoteIds');
+    	if (isset($votedQuoteIds['plus'][$id])) {
+	    	$jsonData = json_encode(array('status' => "NOK", "type" => "vote_plus", "message" => "Vote déjà enregistré"));
+    	} else {
+    		
+    		$votedQuoteIds['plus'][$id] = true;
+    		$session->set('votedQuoteIds', $votedQuoteIds);
+
+	    	$quote = $this->get('doctrine')
+	    		->getRepository('Sf2qotdWebsiteBundle:Quote')
+	    		->find($id);
+	    	$quote->setVotePlus($quote->getVotePlus() + 1);
+	    	$this->get('doctrine')->getEntityManager()->persist($quote);
+	    	$this->get('doctrine')->getEntityManager()->flush();
+	    	
+	    	$jsonData = json_encode(array('status' => "OK", "type" => "vote_plus", "value" => $quote->getVotePlus()));
+    	}
+
     	$headers = array(
 			'Content-Type' => 'application/json'
 		);
@@ -110,14 +122,25 @@ class DefaultController extends Controller
      */    
     public function voteMinus($id)
     {
-    	$quote = $this->get('doctrine')
-    		->getRepository('Sf2qotdWebsiteBundle:Quote')
-    		->find($id);
-    	$quote->setVoteMinus($quote->getVoteMinus() + 1);
-    	$this->get('doctrine')->getEntityManager()->persist($quote);
-    	$this->get('doctrine')->getEntityManager()->flush();
+    	$session       = $this->getRequest()->getSession();
+    	$votedQuoteIds = $session->get('votedQuoteIds');
+
+    	if (isset($votedQuoteIds['minus'][$id])) {
+	    	$jsonData = json_encode(array('status' => "NOK", "type" => "vote_minus", "message" => "Vote déjà enregistré"));
+    	} else {
+    		$votedQuoteIds['minus'][$id] = true;
+    		$session->set('votedQuoteIds', $votedQuoteIds);
+    		
+	    	$quote = $this->get('doctrine')
+	    		->getRepository('Sf2qotdWebsiteBundle:Quote')
+	    		->find($id);
+	    	$quote->setVoteMinus($quote->getVoteMinus() + 1);
+	    	$this->get('doctrine')->getEntityManager()->persist($quote);
+	    	$this->get('doctrine')->getEntityManager()->flush();
+	    	
+	    	$jsonData = json_encode(array('status' => "OK", "type" => "vote_minus", "value" => $quote->getVoteMinus()));
+    	}    	
     	
-    	$jsonData = json_encode(array('status' => "OK", "type" => "vote_minus", "value" => $quote->getVoteMinus()));
     	$headers = array(
 			'Content-Type' => 'application/json'
 		);
