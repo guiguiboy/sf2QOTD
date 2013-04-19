@@ -33,7 +33,7 @@ class QuoteRepository extends EntityRepository
 	public function getFlopTen()
 	{
 		return $this->_em
-			->createQuery('SELECT q FROM Sf2qotd\WebsiteBundle\Entity\Quote q ORDER BY q.vote_minus ASC')
+			->createQuery('SELECT q FROM Sf2qotd\WebsiteBundle\Entity\Quote q ORDER BY q.vote_minus DESC')
 			->setMaxResults(10)
 			->getResult();
 	}
