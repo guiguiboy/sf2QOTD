@@ -2,6 +2,8 @@
 
 body{
 	background: url("/bundles/sf2qotdwebsite/images/bg.png") repeat-x fixed 0 0 #F3F3EB;
+	margin: 0;
+	padding: 0;
 }
 
 .category{
@@ -58,8 +60,8 @@ body{
 
 /* menu */
 .menu {
-	margin-top: 10px;
 	margin-bottom: 10px;
+    background: url("/bundles/sf2qotdwebsite/images/menubg.jpg") repeat-x scroll 0 0 #333333;
 }
 
 .menu ul {
@@ -78,12 +80,16 @@ body{
 	float:left;   
 	width:100px;
 	line-height:50px; /*hauteur de l'image de fond*/
-	background:black repeat-x;
 	color:#DCDCDC;
 	text-decoration:none;
 	text-align:center;
 }
 .menu ul li a:hover {
-	background:black repeat-x;
+	background:#333333 repeat-x;
 	color:white;
+}
+
+#header{
+	background: none repeat scroll 0 0 #444444;
+    height: 90px;
 }

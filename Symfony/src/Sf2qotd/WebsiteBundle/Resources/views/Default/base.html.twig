@@ -15,7 +15,7 @@
     </head>
 
     <body>
-        <div>sf2QOTD : le meilleur du pire du chat</div>
+        <div id="header">sf2QOTD : le meilleur du pire du chat</div>
         {% include 'Sf2qotdWebsiteBundle:Default:menu.html.twig' %}
     
         {% if app.session.hasFlash('notice') %}
@@ -31,7 +31,6 @@
         {% include 'Sf2qotdWebsiteBundle:Default:menu.html.twig' %}
         
         <div id="footer">
-            <hr/>
             By GuiGuiBoy - <a href="https://github.com/guiguiboy/sf2QOTD" target="_blank">Fork me I'm famous</a>
             
         </div>
