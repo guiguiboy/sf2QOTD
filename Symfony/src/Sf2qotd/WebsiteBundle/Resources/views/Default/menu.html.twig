@@ -1,0 +1,12 @@
+<div class="menu">
+    {% block menu %}
+    <ul>
+        <li><a href="{{ path('homepage') }}">Home</a></li>
+        <li><a href="{{ path('_website_top_ten') }}">Top 10</a></li>
+        <li><a href="{{ path('_website_flop_ten') }}">Flop 10</a></li>
+        <li><a href="{{ path('_website_random') }}">Au hasard</a></li>
+        <li><a href="{{ path('_website_submit_form') }}">Soumettre</a></li>
+    </ul>
+    {% endblock %}
+    <div class="floatClear"></div>
+</div>

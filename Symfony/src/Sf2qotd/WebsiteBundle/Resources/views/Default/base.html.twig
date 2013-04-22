@@ -13,26 +13,27 @@
             <script src="{{ asset('bundles/sf2qotdwebsite/js/counter.js') }}"></script>
         {% endblock %}
     </head>
+
     <body>
         <div>sf2QOTD : le meilleur du pire du chat</div>
-        <div id="sidebar">
-                {% block sidebar %}
-                <ul>
-                    <li><a href="{{ path('homepage') }}">Home</a></li>
-                    <li><a href="{{ path('_website_top_ten') }}">Top 10</a></li>
-                    <li><a href="{{ path('_website_flop_ten') }}">Flop 10</a></li>
-                    <li><a href="{{ path('_website_random') }}">Au hasard</a></li>
-                </ul>
-                {% endblock %}
-            </div>
+        {% include 'Sf2qotdWebsiteBundle:Default:menu.html.twig' %}
     
-            <div id="content">
-                {% block body %}{% endblock %}
+        {% if app.session.hasFlash('notice') %}
+            <div class="flash-notice">
+                {{ app.session.flash('notice') }}
             </div>
+        {% endif %}
+
+        <div id="content">
+            {% block body %}{% endblock %}
+        </div>
             
+        {% include 'Sf2qotdWebsiteBundle:Default:menu.html.twig' %}
+        
         <div id="footer">
             <hr/>
-            footer
+            By GuiGuiBoy - <a href="https://github.com/guiguiboy/sf2QOTD" target="_blank">Fork me I'm famous</a>
+            
         </div>
     </body>
 </html>

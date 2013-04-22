@@ -1,0 +1,33 @@
+{# src/sf2qotd/WebsiteBundle/Resources/views/Default/submit_form.html.twig #}
+{% extends 'Sf2qotdWebsiteBundle:Default:base.html.twig' %}
+
+{% block body %}
+    
+    <div>
+        <p>Soumet ta QOTD via le formulaire ci-dessous. Néanmoins, prend garde à :</p>
+        <ul>
+            <li>Masquer le nom de l'utilisateur (dénoncer, c'est mal)</li>
+            <li>Formatter les lignes sur le pattern : <span>&lt;Guillaume B&gt; Message...</span></li>
+            <li>Soumettre un texte lisible (une intervention par ligne, sinon, c'est le bordel)</li>
+            <li>Laisser les fautes d'orthoraphe mais supprimer tous les messages à caractères pas bien (voir "Le Droit pour les nuls" pour plus d'infos)</li>
+        </ul>
+    </div>
+    
+    <div>
+        <form action="{{ path('_website_submit_form') }}" method="post" {{ form_enctype(form) }}>
+            {{ form_errors(form) }}
+
+            <div class="form_label">{{ form_label(form.body) }}</div>
+            <div class="form_element">
+                {{ form_errors(form.body) }}
+                {{ form_widget(form.body) }}
+            </div>
+
+            {{ form_rest(form) }}
+
+            <input type="submit" />
+        </form>
+    
+    </div>
+
+{% endblock %}

@@ -3,10 +3,13 @@
 namespace Sf2qotd\WebsiteBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Session\Session;
+use Sf2qotd\WebsiteBundle\Form\SubmitForm;
+use Sf2qotd\WebsiteBundle\Entity\Quote;
 
 class DefaultController extends Controller
 {
@@ -130,7 +133,7 @@ class DefaultController extends Controller
     	} else {
     		$votedQuoteIds['minus'][$id] = true;
     		$session->set('votedQuoteIds', $votedQuoteIds);
-    		
+
 	    	$quote = $this->get('doctrine')
 	    		->getRepository('Sf2qotdWebsiteBundle:Quote')
 	    		->find($id);
@@ -146,5 +149,38 @@ class DefaultController extends Controller
 		);
 		$response = new Response($jsonData, 200, $headers);
 		return $response;
+    }
+    
+    /**
+     * @Route("/submit_form", name="_website_submit_form")
+     * @Template("Sf2qotdWebsiteBundle:Default:submit_form.html.twig")
+     */
+    public function submitForm(Request $request)
+    {
+    	$form = $this->createForm(new SubmitForm(), array());
+    	
+        if ($request->isMethod('POST'))
+        {
+        	$form->bind($request);
+        	if ($form->isValid())
+        	{
+            	$values = $form->getData();
+            	$quote  = new Quote();
+            	$quote->setBody($values['body']);
+            	$quote->setDate(new \DateTime());
+            	$quote->setVotePlus(0);
+            	$quote->setVoteMinus(0);
+        		$this->get('doctrine')->getEntityManager()->persist($quote);
+	    		$this->get('doctrine')->getEntityManager()->flush();
+	    		
+    		    $this->get('session')->setFlash('notice', 'Merci d\'avoir balancé!');
+
+        		return $this->redirect($this->generateUrl('_website_show', array('id' => $quote->getId())));
+        	}
+    	}
+    	
+    	return array(
+        	'form' => $form->createView()
+        );
     }
 }

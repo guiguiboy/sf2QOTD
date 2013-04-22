@@ -46,3 +46,44 @@ body{
     margin-bottom: 10px;
     padding: 5px;	
 }
+
+.flash-notice{
+    color: green;	
+}
+
+.form_element textarea{
+	width: 80%;
+	height: 250px;
+}
+
+/* menu */
+.menu {
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+.menu ul {
+	padding:0;
+	margin:0;
+	list-style-type:none;
+}
+
+.menu li {
+	float:left; /*pour IE*/
+	border-left:1px solid black;
+}
+
+.menu ul li a {
+	display:block;
+	float:left;   
+	width:100px;
+	line-height:50px; /*hauteur de l'image de fond*/
+	background:black repeat-x;
+	color:#DCDCDC;
+	text-decoration:none;
+	text-align:center;
+}
+.menu ul li a:hover {
+	background:black repeat-x;
+	color:white;
+}
