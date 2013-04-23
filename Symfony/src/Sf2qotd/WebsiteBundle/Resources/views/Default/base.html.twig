@@ -21,13 +21,12 @@
         </div>
         {% include 'Sf2qotdWebsiteBundle:Default:menu.html.twig' %}
     
-        {% if app.session.hasFlash('notice') %}
-            <div class="flash-notice">
-                {{ app.session.flash('notice') }}
-            </div>
-        {% endif %}
-
         <div id="content">
+            {% if app.session.hasFlash('notice') %}
+                <div class="flash-notice">
+                    {{ app.session.flash('notice') }}
+                </div>
+            {% endif %}
             {% block body %}{% endblock %}
         </div>
             

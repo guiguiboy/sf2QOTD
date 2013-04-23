@@ -19,14 +19,54 @@ class DefaultController extends Controller
      */
     public function indexAction()
     {
-    	$quotes = $this->get('doctrine')
+		$quotes = $this->get('doctrine')
     		->getRepository('Sf2qotdWebsiteBundle:Quote')
-    		->findAll();
+    		->getPaginatedQuotes(0, 10);
     		
         return array(
         	'quotes' => $quotes,
         	'category'   => 'Les dernières contributions'
         );
+    }
+    
+    /**
+     * @Route("/browse", name="_website_browse")
+     * @Template()
+     * 
+     * Manual pagination. @todo See Pagination bundles.
+     */
+    public function browseAction(Request $request)
+    {
+    	$page           = $request->get('page', 1);
+    	$numberPerPage  = 10;
+    	$numberOfQuotes = $this->get('doctrine')
+    		->getRepository('Sf2qotdWebsiteBundle:Quote')
+    		->getQuoteCount();
+    	$lastPage       = ceil($numberOfQuotes / $numberPerPage);
+
+    	if ((int) $page > 1)
+    		$previousPage = $page - 1;
+    	else 
+    		$previousPage = false;
+    	
+    	if ($page == $lastPage)
+    		$nextPage = false;
+    	else
+    		$nextPage = $page + 1;
+
+    	$quotes = $this->get('doctrine')
+    		->getRepository('Sf2qotdWebsiteBundle:Quote')
+    		->getPaginatedQuotes($page - 1, $numberPerPage);
+    		
+    	return array(
+    		'quotes'       => $quotes,
+    		'previousPage' => $previousPage,
+    		'nextPage'     => $nextPage,
+    		'firstPage'    => 1,
+    		'lastPage'     => $lastPage,
+    		'page'         => $page,
+    		'category'     => 'Parcourir'
+    	);
     }
 
     /**

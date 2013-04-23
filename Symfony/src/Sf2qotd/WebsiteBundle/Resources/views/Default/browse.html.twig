@@ -1,0 +1,39 @@
+{# src/sf2qotd/WebsiteBundle/Resources/views/Default/index.html.twig #}
+{% extends 'Sf2qotdWebsiteBundle:Default:base.html.twig' %}
+
+{% block body %}
+    <div class="category">{{ category }}</div>
+
+    {% include 'Sf2qotdWebsiteBundle:Default:list.html.twig' 
+        with {'quotes': quotes}
+    %}
+    
+    <div class="pager">
+        {% if page == firstPage %} 
+            &lt;&lt;
+        {% else %}
+            <a href="{{ path('_website_browse', {page: firstPage}) }}">&lt;&lt;</a>
+        {% endif %}
+        
+        {% if previousPage %} 
+            <a href="{{ path('_website_browse', {page: previousPage}) }}">&lt;</a>
+        {% else %}
+            &lt;
+        {% endif %}
+        
+        {{ page }} / {{ lastPage }}
+        
+        {% if nextPage %} 
+            <a href="{{ path('_website_browse', {page: nextPage}) }}">&gt;</a>
+        {% else %}
+            &gt;
+        {% endif %}
+        
+        {% if page == lastPage %} 
+            &gt;&gt;
+        {% else %}
+            <a href="{{ path('_website_browse', {page: lastPage}) }}">&gt;&gt;</a>
+        {% endif %}
+    </div>
+{% endblock %}
+

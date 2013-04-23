@@ -2,6 +2,7 @@
 
 <div class="quote" id="quote_{{ quote.id }}">
     <div class="quote_count">
+        <div>#{{ quote.id }}</div>
         <div class="quote_pros"><a class="vote_link" href="{{ path('_website_vote_plus', {'id': quote.id}) }}">Trop LOL</a><span>{{ quote.votePlus }}</span></div>
         <div class="quote_cons"><a class="vote_link" href="{{ path('_website_vote_minus', {'id': quote.id}) }}">Bouffon!</a><span>{{ quote.voteMinus }}</span></div>
     </div>

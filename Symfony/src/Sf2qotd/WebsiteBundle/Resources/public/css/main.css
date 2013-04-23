@@ -101,6 +101,5 @@ body{
 	text-align:center;
 }
 .menu ul li a:hover {
-	background:#333333 repeat-x;
-	color:white;
+	color:green;
 }

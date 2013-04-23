@@ -37,4 +37,33 @@ class QuoteRepository extends EntityRepository
 			->setMaxResults(10)
 			->getResult();
 	}
+	
+	/**
+	 * Returns the number of Quotes in the database
+	 * 
+	 * @return integer
+	 */
+	public function getQuoteCount()
+	{
+		return $this->_em
+			->createQuery('SELECT COUNT(q.id) FROM Sf2qotd\WebsiteBundle\Entity\Quote q')
+			->getSingleScalarResult();
+	}
+
+	/**
+	 * Returns a paginated list of Quotes
+	 * 
+	 * @param integer $currentPage
+	 * @param integer $numberPerPage
+	 * 
+	 * @return array
+	 */
+	public function getPaginatedQuotes($currentPage, $numberPerPage)
+	{
+		return $this->_em
+			->createQuery('SELECT q FROM Sf2qotd\WebsiteBundle\Entity\Quote q ORDER BY q.id desc')
+			->setMaxResults($numberPerPage)
+			->setFirstResult($numberPerPage * $currentPage)
+			->getResult();
+	}
 }
