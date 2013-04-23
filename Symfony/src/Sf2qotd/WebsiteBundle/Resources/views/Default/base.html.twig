@@ -15,7 +15,10 @@
     </head>
 
     <body>
-        <div id="header">sf2QOTD : le meilleur du pire du chat</div>
+        <div id="header">
+            <span>sf2QOTD</span>
+            <div>le meilleur du pire du chat</div>
+        </div>
         {% include 'Sf2qotdWebsiteBundle:Default:menu.html.twig' %}
     
         {% if app.session.hasFlash('notice') %}
